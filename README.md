@@ -10,19 +10,19 @@ This project allows you to **control your computer mouse** using hand gestures c
    - The laptop camera captures hand gestures in real time.
    - Using MediaPipe, 21 hand landmarks (x, y coordinates) are extracted per frame.
    - The coordinates are stored in a CSV file for training with corresponding labels:
-     - `1` → Click gesture (closed fist)
-     - `2` → Move gesture (open hand)
-     - `3` → Other/neutral gesture
+     - `0` → Click gesture (closed fist)
+     - `1` → Move gesture (closed fist with thumb and index finger joined)
+     - `2` → Other/neutral gesture
 
 2. **Model Training**
    - A Multi-Layer Perceptron (MLP) model is trained on the collected data:
-     - **Input Layer:** 43 neurons (42 for 21 `(x, y)` points + 1 bias or optional extra)
+     - **Input Layer:** 42 neurons (42 for 21 `(x, y)` points)
      - **Hidden Layer:** 10 neurons, activation: ReLU
      - **Output Layer:** 3 neurons (click, move, other), activation: Softmax
    - The model is compiled, trained, and saved for later use.
 
 3. **Real-Time Mouse Control**
-   - The saved MLP model is loaded.
+   - The saved MLP model is loaded, or an already trained model is used.
    - Live camera input is processed to extract hand landmarks.
    - The model predicts the gesture in real time:
      - If the prediction is `1`: perform a **mouse click**
@@ -44,13 +44,11 @@ This project allows you to **control your computer mouse** using hand gestures c
 ## 📂 Project Structure
     📁 virtual-mouse-mlp/
     ├── data/
-    │ └── hand_data.csv # Collected hand landmark features with labels
+    │ └── data.csv # Collected hand landmark features without labels
+    │ └── new_data.csv # Collected hand landmark features with labels
     ├── model/
-    │ └── mlp_model.h5 # Trained MLP model
-    ├── collect_data.py # Script to collect and save hand landmark data
-    ├── train_model.py # Script to train and save the MLP model
-    ├── run_mouse_control.py # Final script to control mouse in real-time
-    ├── README.md # This file
+    │ └── mouse.h5 # Trained MLP model
+    ├── mouse.ipynb # Script to collect, save hand landmark data, train model, make live prediction, and perform action on mouse.
 
 ---
 
@@ -58,5 +56,5 @@ This project allows you to **control your computer mouse** using hand gestures c
 
 1. **Install Dependencies**
    ```bash
-   pip install opencv-python mediapipe numpy pyautogui tensorflow
-2. ** Run mouse.ipynb file**
+   pip install opencv-python mediapipe numpy pyautogui tensorflow scipy pandas
+2. **Run mouse.ipynb file**
